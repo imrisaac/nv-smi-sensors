@@ -17,7 +17,7 @@
 #define DRIVER_NAME "gpu_temp_hwmon"
 #define TEMP_FILE "/tmp/gpu_max_temp"
 
-MODULE_AUTHOR("AI Assistant");
+MODULE_AUTHOR("Isaac R");
 MODULE_DESCRIPTION("GPU Temperature Hardware Monitor");
 MODULE_LICENSE("GPL");
 MODULE_VERSION("1.0");
