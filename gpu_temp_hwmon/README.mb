@@ -1,0 +1,37 @@
+# signing if secure boot enabled
+## Create a signing key
+sudo openssl req -new -x509 -newkey rsa:2048 -keyout MOK.priv -outform DER -out MOK.der -nodes -days 36500 -subj "/CN=GPU Module Signing Key/"
+
+## Sign the module
+sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 MOK.priv MOK.der gpu_temp_hwmon.ko
+
+## Import the key into MOK (Machine Owner Key)
+sudo mokutil --import MOK.der
+
+sudo reboot
+
+During boot, you'll see a blue MOK management screen:
+
+1. Select "Enroll MOK"
+2. Select "Continue"
+3. Enter the password you set earlier
+4. Select "Reboot"
+
+After reboot, try loading the module:
+
+cd ~/test_timestamps_pipeline/nv-smi-sensors/gpu_temp_hwmon
+sudo insmod gpu_temp_hwmon.ko
+
+# Check if it loaded
+lsmod | grep gpu_temp
+dmesg | tail -5
+
+
+# Install the module permanently
+sudo make install
+
+## Load automatically on boot
+echo "gpu_temp_hwmon" | sudo tee -a /etc/modules
+
+## Test auto-loading
+sudo modprobe gpu_temp_hwmon
